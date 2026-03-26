@@ -120,6 +120,11 @@ function getOrCreateSeed() {
 
   const seed = String(Math.floor(1000 + Math.random() * 9000));
   storage.setItem(SEED_KEY, seed);
+  const existing = localStorage.getItem(SEED_KEY);
+  if (existing) return existing;
+
+  const seed = String(Math.floor(1000 + Math.random() * 9000));
+  localStorage.setItem(SEED_KEY, seed);
   return seed;
 }
 
@@ -150,6 +155,7 @@ function buildTasks(seed) {
 
 function loadState(tasks) {
   const saved = storage.getItem(STORAGE_KEY);
+  const saved = localStorage.getItem(STORAGE_KEY);
   if (!saved) {
     state = tasks;
     persist();
@@ -173,6 +179,7 @@ function loadState(tasks) {
       };
     });
   } catch (error) {
+  } catch {
     state = tasks;
     persist();
   }
@@ -266,6 +273,8 @@ function resetGame() {
 
   storage.removeItem(STORAGE_KEY);
   storage.removeItem(SEED_KEY);
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(SEED_KEY);
   initFresh();
 }
 
@@ -328,6 +337,7 @@ function collectLineIndexes() {
 
 function persist() {
   storage.setItem(
+  localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(state.map((cell) => ({ name: cell.name || '' })))
   );
