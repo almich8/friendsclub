@@ -1,6 +1,8 @@
 const STORAGE_KEY = 'mhat_friends_bingo_state_v1';
 const SEED_KEY = 'mhat_friends_bingo_seed_v1';
 
+const storage = createSafeStorage();
+
 const PHRASES = [
   'Знакомься',
   'Общайся',
@@ -113,11 +115,11 @@ function hydrateTicker() {
 }
 
 function getOrCreateSeed() {
-  const existing = localStorage.getItem(SEED_KEY);
+  const existing = storage.getItem(SEED_KEY);
   if (existing) return existing;
 
   const seed = String(Math.floor(1000 + Math.random() * 9000));
-  localStorage.setItem(SEED_KEY, seed);
+  storage.setItem(SEED_KEY, seed);
   return seed;
 }
 
@@ -147,7 +149,7 @@ function buildTasks(seed) {
 }
 
 function loadState(tasks) {
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved = storage.getItem(STORAGE_KEY);
   if (!saved) {
     state = tasks;
     persist();
@@ -170,7 +172,7 @@ function loadState(tasks) {
         filled: Boolean(name.trim())
       };
     });
-  } catch {
+  } catch (error) {
     state = tasks;
     persist();
   }
@@ -262,8 +264,8 @@ function resetGame() {
   const confirmed = window.confirm('Точно начать заново? Все заполненные клетки будут очищены.');
   if (!confirmed) return;
 
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(SEED_KEY);
+  storage.removeItem(STORAGE_KEY);
+  storage.removeItem(SEED_KEY);
   initFresh();
 }
 
@@ -325,10 +327,35 @@ function collectLineIndexes() {
 }
 
 function persist() {
-  localStorage.setItem(
+  storage.setItem(
     STORAGE_KEY,
     JSON.stringify(state.map((cell) => ({ name: cell.name || '' })))
   );
+}
+
+function createSafeStorage() {
+  const memoryFallback = {};
+
+  try {
+    const testKey = '__mhat_storage_test__';
+    window.localStorage.setItem(testKey, 'ok');
+    window.localStorage.removeItem(testKey);
+    return window.localStorage;
+  } catch (error) {
+    return {
+      getItem(key) {
+        return Object.prototype.hasOwnProperty.call(memoryFallback, key)
+          ? memoryFallback[key]
+          : null;
+      },
+      setItem(key, value) {
+        memoryFallback[key] = String(value);
+      },
+      removeItem(key) {
+        delete memoryFallback[key];
+      }
+    };
+  }
 }
 
 function mulberry32(a) {
