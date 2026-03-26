@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Клуб Друзей Школы-студии МХАТ — Найди своих</title>
+    <meta
+      name="description"
+      content="Нетворкинг-игра Клуба Друзей Школы-студии МХАТ: находи людей, заполняй клетки и собирай линии."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo-pill" href="#top" aria-label="Клуб Друзей Школы-студии МХАТ">
+          <img src="logo.svg" alt="Логотип Клуба Друзей Школы-студии МХАТ" />
+        </a>
+        <span class="header-tag">Нетворкинг-игра</span>
+      </div>
+    </header>
+
+    <main id="top" class="page-main">
+      <section class="hero container">
+        <div class="hero-badge">Клуб Друзей Школы-студии МХАТ</div>
+        <h1 class="hero-title">Найди<br />своих!</h1>
+        <p class="hero-sub">
+          Знакомься с участниками клуба через игру — найди людей, которым подходит описание,
+          впиши имя и собери линию.
+        </p>
+
+        <div class="rule-grid" aria-label="Правила">
+          <article class="rule-card">Нажми на клетку</article>
+          <article class="rule-card">Найди человека и впиши имя</article>
+          <article class="rule-card">Ряд, столбец или диагональ — победа</article>
+          <article class="rule-card">Покажи собранную линию организаторам</article>
+        </div>
+
+        <div class="ticker" aria-hidden="true">
+          <div class="ticker-track" id="tickerTrack"></div>
+        </div>
+      </section>
+
+      <section class="game container" aria-label="Игровая карточка бинго">
+        <div class="win-banner" id="winBanner" hidden>
+          <h2>Линия собрана!</h2>
+          <p id="winSubtext"></p>
+        </div>
+
+        <div class="counters" role="status" aria-live="polite">
+          <div class="counter-item">
+            <span class="counter-label">Заполнено</span>
+            <strong id="filledCount">0</strong>
+          </div>
+          <div class="counter-item">
+            <span class="counter-label">Осталось</span>
+            <strong id="leftCount">24</strong>
+          </div>
+          <div class="counter-item">
+            <span class="counter-label">Линий</span>
+            <strong id="lineCount">0</strong>
+          </div>
+        </div>
+
+        <p class="card-number">Карточка №<span id="cardSeed">—</span></p>
+
+        <div class="bingo-grid" id="bingoGrid" role="grid" aria-label="Сетка бинго 5 на 5"></div>
+
+        <button class="btn btn-outline reset-btn" id="resetBtn" type="button">Начать заново</button>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="modalOverlay" hidden>
+      <section
+        class="bottom-sheet"
+        id="bottomSheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sheetTitle"
+      >
+        <p class="sheet-label">Найди такого человека и впиши его имя:</p>
+        <h3 id="sheetTitle" class="sheet-task"></h3>
+
+        <label class="sr-only" for="nameInput">Имя</label>
+        <input id="nameInput" type="text" maxlength="38" placeholder="Имя..." autocomplete="off" />
+
+        <div class="sheet-actions">
+          <button class="btn btn-outline" id="resetCellBtn" type="button">Очистить клетку</button>
+          <button class="btn btn-ghost" id="cancelBtn" type="button">Отмена</button>
+          <button class="btn btn-primary" id="saveBtn" type="button">Записать ✓</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
